@@ -1,1 +1,69 @@
 \section{Regularized Dual Averaging}
+
+Regularized dual averaging (Xiao 2010, Nesterov 2009) is proposed to solve the penalized optimization problem
+\begin{align*}
+	\min f(\theta) &= \mathbb{E}f(\theta,Z) + \phi(\theta)\\
+		&= \frac{1}{n}\sum_{i=1}^n f(\theta,Z_i) + \phi(\theta)
+\end{align*}
+
+Similar as SGD problem, we can only see finite i.i.d random samples $Z_1, Z_2, ..., Z_n$ drawn from a certain population. Therefore, instead of minimizing $\mathbb{E}f(\theta,Z) + \phi(\theta)$, we are going to minimize over the surrogate $\frac{1}{n}\sum_{i=1}^n f(\theta,Z_i) + \phi(\theta)$.
+
+Here are some examples of penalty function $f(\theta)$:
+\begin{equation*}
+	\phi(\theta) = \begin{cases} 
+		\lambda\Vert \theta \Vert_1 &\text{$l_1$ penalty (Lasso)}\\
+		\lambda\Vert \theta \Vert_2 &\text{$l_2$ penalty (ridge)}\\
+		\mathbb{I}_C &\text{indicator function (constraint on convex closed set $C$)}\\
+		\sum \lambda_i|\theta|_{(i)} &\text{sorted $l_1$ penalty (Slope)}
+	\end{cases}
+\end{equation*}
+
+Regularized dual averaging is a method to solve the optimization problem
+\begin{equation*}
+	\min f(\theta) = \frac{1}{n}\sum_{i=1}^n f(\theta,Z_i) + \phi(\theta)
+\end{equation*}
+
+First, RDA takes initialized value $\theta_0$. Similar as SGD, at $k$th step, the algorithm draws $i_k$ uniformly from indices set $\{1,2,...,n\}$ and calculate the gradient with only one sample $Z_{i_k}$:
+\[ g_k = \partial f(\theta_k, Z_{i_k}) \]
+
+However, the update rule of RDA is different from SGD, which is
+\[ \theta_{k+1} = \arg\min_\theta \left\{ \langle \frac{g_1 + g_2 + ... g_k}{k}, \theta \rangle + \phi(\theta) + \frac{B_k}{k}\cdot\frac{\Vert \theta \Vert^2}{2}  \right\}  \]
+
+The name "dual averging" comes from the special term $\frac{g_1 + g_2 + ... g_k}{k}$ in the above updata rule. $g_1, g_2, ..., g_k$ are gradients thus can be viewed as vectors from the dual space. Here we evaluate the average of these $k$ gradients so we call this method "dual averging".
+
+\textbf{Remarks:}
+\begin{enumerate}
+	\item Although we need to average over all previous gradients, this algorithm is indeed a online algorithm. Because at the $k$th step we only need to record the average
+	\[ \bar{g}_k = \frac{g_1 + g_2 + ... + g_k}{k}  \]
+	
+	At the next step, the average can be updated by using only $\bar{g}_k$ and $g_{k+1}$
+	\[ \bar{g}_{k+1} = \frac{k}{k+1}\bar{g}_k + \frac{1}{k+1}g_{k+1}  \]
+	
+	\item $\frac{\Vert \theta \Vert^2}{2}$ can be replaced if $f$ is a strongly convex function.
+\end{enumerate}
+
+\textbf{Prof. Su's interpretation of RDA:}
+To simplify notations, let's assume at $k$th step we observe a data point $Z_k$. Then by a crude derivation,
+\begin{align*}
+	f(\theta) &= \mathbb{E}f(\theta,Z) + \phi(\theta) \\
+	&\approx \frac{1}{k}\sum_{j=1}^k f(\theta,Z_j) + \phi(\theta) \\
+	&\approx \frac{1}{k}\sum_{j=1}^k( f(\theta_j,Z_j) + \langle \partial f(\theta_j,Z_j), \theta - \theta_j \rangle + \text{quadratic} ) + \phi(\theta) \\
+	&= \langle \frac{1}{k}\sum_{j=1}^k g_j, \theta \rangle + \phi(\theta) + \text{quadratic} + \text{constant}
+\end{align*}
+
+Therefore, minimizing $f(\theta)$ is approximatly equivalent to minimizing
+\[ \langle \frac{1}{k}\sum_{j=1}^k g_j, \theta \rangle + \phi(\theta) + \text{quadratic}  \]
+
+The next (informal) theorem gives the convergence rate of RDA:
+\begin{theorem}
+	If $\mathbb{E} f(\theta,Z)$ is convex and $L-Lipstichiz$, let $B_k = C\sqrt{k}$, and denote $\bar\theta_k = \frac{1}{k+1}\sum_{i=0}^k \theta_i$, we have
+	\[ \mathbb{E} f(\theta,Z) - f(\theta^\ast) = O(\frac{1}{\sqrt{k}}) \]
+\end{theorem}
+
+Although convergence rate of RDA is still $\frac{1}{\sqrt{k}}$, the same as SGD, it has several benifits compared to SGD:
+\begin{enumerate}
+	\item Solution in RDA can be sparse for $\phi(\theta) = \lambda\Vert\theta\Vert_1$.
+	\item Empirical performance of RDA is better than SGD.
+	\item Dual averaging can be a trick generalizing to distributed settings (Duchi, Agarval, Wainwright 2012).
+	\item (this is like a remark, not a comparison between RDA and SGD.) SVRG(2013) is better than dual averaging. This comparison is not that fair because SVRG is not an online method. But SVRG is more popular in industry.
+\end{enumerate}
