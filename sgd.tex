@@ -1,1 +1,23 @@
 \section{Stochastic Gradient Descent}
+Consider the follow optimization problem:
+\begin{equation}
+	\min f(\theta) = \mathbb{E}f(\theta, z)
+\end{equation}
+In the setting of stochastic gradient descent (SGD) the optimizor is given access only to a realization of the random function $\mathbb{E} (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $f(\theta)$. 
+In general $\mathbb{E}(\theta, z)$ is a high-dimensional integral which cannot be directly computed. Thus instead the optimizer recieves a noisy realization of the function computed as:
+\begin{equation}
+	\frac{1}{n}\sum_{i=1}^{n} f(\theta, z_I)
+\end{equation}
+
+In what follows we will derive results where $f(\theta)$ is assumed to be convex but not necessarily smooth. In the case where $f(\theta)$ is convex and non-smooth the subgradient is denoted as: 
+\begin{equation}
+\delta_{\theta} f (\theta,z)
+\end{equation}
+
+
+Update step is given as: 
+\begin{equation}
+	\theta_{k+1} = \theta_k + \gamma_k \left(\theta_k, z_k\right)
+\end{equation}
+
+Where $\theta_k$ is the step-size. 
