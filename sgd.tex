@@ -4,7 +4,7 @@ Consider the follow optimization problem:
 	\min f(\theta) = \mathbb{E}f(\theta, z)
 \end{equation}
 In the setting of stochastic gradient descent (SGD) the optimizor is given access only to a realization of the random function $\mathbb{E} (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $f(\theta)$. 
-In general $\mathbb{E}(\theta, z)$ is a high-dimensional integral which cannot be directly computed. Thus instead the optimizer recieves a noisy realization of the function computed as:
+In general $\mathbb{E}f(\theta, z)$ is a high-dimensional integral which cannot be directly computed. Thus instead the optimizer recieves a noisy realization of the function computed as:
 \begin{equation}
 	\frac{1}{n}\sum_{i=1}^{n} f(\theta, z_I)
 \end{equation}
@@ -15,9 +15,11 @@ In what follows we will derive results where $f(\theta)$ is assumed to be convex
 \end{equation}
 
 
-Update step is given as: 
+In the SGD method, the update step is given as: 
 \begin{equation}
-	\theta_{k+1} = \theta_k + \gamma_k \left(\theta_k, z_k\right)
+	\theta_{k+1} = \theta_k + \gamma_k g\left(\theta_k, z_k\right)
 \end{equation}
 
-Where $\theta_k$ is the step-size. 
+Here $g$ is an unbiased estimation of the true gradient (or subgradient) and $\theta_k$ is the step-size. 
+
+\subsection{Use of SGD in Practice}

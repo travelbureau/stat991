@@ -132,91 +132,91 @@ This lecture covers the following topics:
 \input{polyak}
 
 
-\section{Some theorems and stuff}
- % Don't be this informal in your notes!
-
-We now delve right into the proof.
-
-\begin{lemma}
-This is the first lemma of the lecture.
-\end{lemma}
-
-\begin{proof}
-The proof is by induction on $\ldots$.
-For fun, we throw in a figure.
-%%%NOTE USAGE !
-\fig{1}{1in}{A Fun Figure}
-
-This is the end of the proof, which is marked with a little box.
-\end{proof}
-
-\subsection{A few items of note}
-
-Here is an itemized list:
-\begin{itemize}
-\item this is the first item;
-\item this is the second item.
-\end{itemize}
-
-Here is an enumerated list:
-\begin{enumerate}
-\item this is the first item;
-\item this is the second item.
-\end{enumerate}
-
-Here is an exercise:
-
-{\bf Exercise:}  Show that ${\rm P}\ne{\rm NP}$.
-
-Here is how to define things in the proper mathematical style.
-Let $f_k$ be the $AND-OR$ function, defined by
-
-\[ f_k(x_1, x_2, \ldots, x_{2^k}) = \left\{ \begin{array}{ll}
-
-	x_1 & \mbox{if $k = 0$;} \\
-
-	AND(f_{k-1}(x_1, \ldots, x_{2^{k-1}}),
-	   f_{k-1}(x_{2^{k-1} + 1}, \ldots, x_{2^k}))
-	 & \mbox{if $k$ is even;} \\
-
-	OR(f_{k-1}(x_1, \ldots, x_{2^{k-1}}),
-	   f_{k-1}(x_{2^{k-1} + 1}, \ldots, x_{2^k}))	
-	& \mbox{otherwise.} 
-	\end{array}
-	\right. \]
-
-\begin{theorem}
-This is the first theorem.
-\end{theorem}
-
-\begin{proof}
-This is the proof of the first theorem. We show how to write pseudo-code now.
-%*** USE PSEUDO-CODE ONLY IF IT IS CLEARER THAN AN ENGLISH DESCRIPTION
-
-Consider a comparison between $x$ and~$y$:
-\begin{tabbing}
-\hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
-\>{\bf if} $x$ or $y$ or both are in $S$ {\bf then } \\
-\>\> answer accordingly \\
-\>{\bf else} \\
-\>\>    Make the element with the larger score (say $x$) win the comparison \\
-\>\> {\bf if} $F(x) + F(y) < \frac{n}{t-1}$ {\bf then} \\%
-\>\>\> $F(x) \leftarrow F(x) + F(y)$ \\
-\>\>\> $F(y) \leftarrow 0$ \\
-\>\> {\bf else}  \\
-\>\>\> $S \leftarrow S \cup \{ x \} $ \\
-\>\>\> $r \leftarrow r+1$ \\
-\>\> {\bf endif} \\
-\>{\bf endif} 
-\end{tabbing}
-
-This concludes the proof.
-\end{proof}
-
-
-\section{Next topic}
-
-Here is a citation, just for fun~\cite{CW87}.
+%\section{Some theorems and stuff}
+% % Don't be this informal in your notes!
+%
+%We now delve right into the proof.
+%
+%\begin{lemma}
+%This is the first lemma of the lecture.
+%\end{lemma}
+%
+%\begin{proof}
+%The proof is by induction on $\ldots$.
+%For fun, we throw in a figure.
+%%%%NOTE USAGE !
+%\fig{1}{1in}{A Fun Figure}
+%
+%This is the end of the proof, which is marked with a little box.
+%\end{proof}
+%
+%\subsection{A few items of note}
+%
+%Here is an itemized list:
+%\begin{itemize}
+%\item this is the first item;
+%\item this is the second item.
+%\end{itemize}
+%
+%Here is an enumerated list:
+%\begin{enumerate}
+%\item this is the first item;
+%\item this is the second item.
+%\end{enumerate}
+%
+%Here is an exercise:
+%
+%{\bf Exercise:}  Show that ${\rm P}\ne{\rm NP}$.
+%
+%Here is how to define things in the proper mathematical style.
+%Let $f_k$ be the $AND-OR$ function, defined by
+%
+%\[ f_k(x_1, x_2, \ldots, x_{2^k}) = \left\{ \begin{array}{ll}
+%
+%	x_1 & \mbox{if $k = 0$;} \\
+%
+%	AND(f_{k-1}(x_1, \ldots, x_{2^{k-1}}),
+%	   f_{k-1}(x_{2^{k-1} + 1}, \ldots, x_{2^k}))
+%	 & \mbox{if $k$ is even;} \\
+%
+%	OR(f_{k-1}(x_1, \ldots, x_{2^{k-1}}),
+%	   f_{k-1}(x_{2^{k-1} + 1}, \ldots, x_{2^k}))	
+%	& \mbox{otherwise.} 
+%	\end{array}
+%	\right. \]
+%
+%\begin{theorem}
+%This is the first theorem.
+%\end{theorem}
+%
+%\begin{proof}
+%This is the proof of the first theorem. We show how to write pseudo-code now.
+%%*** USE PSEUDO-CODE ONLY IF IT IS CLEARER THAN AN ENGLISH DESCRIPTION
+%
+%Consider a comparison between $x$ and~$y$:
+%\begin{tabbing}
+%\hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \= \hspace*{.25in} \=\kill
+%\>{\bf if} $x$ or $y$ or both are in $S$ {\bf then } \\
+%\>\> answer accordingly \\
+%\>{\bf else} \\
+%\>\>    Make the element with the larger score (say $x$) win the comparison \\
+%\>\> {\bf if} $F(x) + F(y) < \frac{n}{t-1}$ {\bf then} \\%
+%\>\>\> $F(x) \leftarrow F(x) + F(y)$ \\
+%\>\>\> $F(y) \leftarrow 0$ \\
+%\>\> {\bf else}  \\
+%\>\>\> $S \leftarrow S \cup \{ x \} $ \\
+%\>\>\> $r \leftarrow r+1$ \\
+%\>\> {\bf endif} \\
+%\>{\bf endif} 
+%\end{tabbing}
+%
+%This concludes the proof.
+%\end{proof}
+%
+%
+%\section{Next topic}
+%
+%Here is a citation, just for fun~\cite{CW87}.
 
 \section*{References}
 \beginrefs
