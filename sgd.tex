@@ -1,23 +1,23 @@
 \section{Stochastic Gradient Descent}
 Consider the follow optimization problem:
-\begin{equation}
+\begin{equation*}
 	\min F(\theta) = \mathbb{E}f(\theta, z)
-\end{equation}
+\end{equation*}
 In the setting of stochastic gradient descent (SGD) the optimizer is given access only to a realization of the random function $\mathbb{E} f (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $F(\theta)$. 
 In general $\mathbb{E}f(\theta, z)$ may be a high-dimensional integral which cannot be directly computed. Thus, the optimizer instead receives a noisy realization of the function, commonly called the empirical risk, computed as:
-\begin{equation}
+\begin{equation*}
 	\frac{1}{n}\sum_{i=1}^{n} f(\theta; z_I)
-\end{equation}
+\end{equation*}
 
 In what follows we will derive results where $f(\theta)$ is assumed to be convex but not necessarily smooth. In the case where $f(\theta)$ is convex and non-smooth the subgradient is denoted as: 
 
-\begin{equation}
+\begin{equation*}
 	\delta_{\theta} f (\theta,z)
-\end{equation}
+\end{equation*}
 Here $z_k = \left\{x_k, y_k\right\}$ a tuple of a feature and a label. In the SGD method, the update step is given as (Robbins and Monro 1951): 
-\begin{equation}
+\begin{equation*}
 	\theta_{k+1} = \theta_k + \gamma_k g\left(\theta_k, z_k\right)
-\end{equation}
+\end{equation*}
 
 Here $g$ is an unbiased estimation of the true gradient (or subgradient) of $F(\theta)$, and $\gamma_k$ is the step-size. 
 
@@ -25,22 +25,50 @@ Here $g$ is an unbiased estimation of the true gradient (or subgradient) of $F(\
 SGD is commonly used in practice because typical data sets involve feature vectors which are sparse or contain redundant information. Using all such data simultaneously is inefficient; using a method such as SGD enables cheaper per iteration compute costs. Consider the example of empirical risk minimization. 
 
 \textbf{Example} (\textit{Empirical Risk Minimization}) Let $\left\{x_i, y_i\right\}_{i=1}^n$ be $n$ random samples. The empirical risk minimization problem is then:
-\begin{equation}
+\begin{equation*}
 	\min_{\theta} F(\theta) := \frac{1}{n} \sum_{i=1}^n f(\theta; \left\{x_i, y_i\right\})
-\end{equation}
+\end{equation*}
 However, if the index $j$ is drawn from $j \sim \mathbf{U}(1,n)$ then:
-\begin{equation}
+\begin{equation*}
 	F(\theta) = \mathbb{E}_j f(\theta; \left\{x_j, y_j\right\})
-\end{equation}
+\end{equation*}
 Given some minor technical conditions:
-\begin{align}
+\begin{align*}
 \theta_{k+1} &= \theta_k - \gamma_k \nabla F(\theta_k)\\
 &= \theta_k - \gamma_k \nabla \mathbb{E}f(\theta_k, z_k)\\
 &= \theta_k - \gamma_k \mathbb{E} \nabla_{\theta} f(\theta_k, z_k)
-\end{align}
+\end{align*}
 
 The SGD algorithm is commonly used in this setting when $x_i$ is large vector. Other common use cases are in temporal difference learning and Q-learning. 
 
 \subsection{Convergence}
+When $F(\theta)$ is convex note that:
+\begin{align*}
+	\mathbb{E} || g(\theta, z) ||_2^2 &\leq \beta^2 \; \forall \theta\\
+	\mathbb{E} || g(\theta, z) ||_2^2 &\geq ||\mathbb{E} g(\theta, z) ||_2^2\\
+	||\mathbb{E} g(\theta, z) ||_2^2 &= ||\delta f(\theta)||_2
+\end{align*}
+
+Then:
+\begin{theorem}
+	Given $\bar{\theta}_k= \sum_{i=0}^k \frac{\gamma_i}{\sum_{j=0}^k \gamma_j}$. It is the case that: 
+	\begin{equation*}
+	\mathbb{E}\left[f(\bar{\theta}_k 0 f(\theta^*))\right] \leq \frac{\frac{1}{2} ||\theta_0 - \theta^*||_2^2 + \frac{1}{2}\beta^2 \sum_{i=0}^{k}\gamma_i^2}{\sum_{j=0}^k \gamma_j}
+	\end{equation*}
+	Thus, if the step size $\gamma_k= \mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$:
+	\begin{equation*}
+		\mathbb{E}\left[f(\bar{\theta}_k 0 f(\theta^*))\right] \leq \mathcal{O}\left(\frac{\log k}{\sqrt{k}}\right)
+	\end{equation*}
+	Furthermore, it is possible to drop the term $\log k$ if $\gamma_k$ is properly chosen. 
+	
+\end{theorem}
+
+Note that the proof of convergence is similar to that of the subgradient method and details can be found in (Bouttou, Curtis, Nocedal 2018). 
+
 
 \subsection{Optimality of SGD}
+If $F(\theta)$ is convex, and l-smooth consider two cases:
+
+\noindent \textbf{Deterministic Convergence} 
+
+\noindent \textbf{Stochastic Convergence}
