@@ -1,25 +1,46 @@
 \section{Stochastic Gradient Descent}
 Consider the follow optimization problem:
 \begin{equation}
-	\min f(\theta) = \mathbb{E}f(\theta, z)
+	\min F(\theta) = \mathbb{E}f(\theta, z)
 \end{equation}
-In the setting of stochastic gradient descent (SGD) the optimizor is given access only to a realization of the random function $\mathbb{E} (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $f(\theta)$. 
-In general $\mathbb{E}f(\theta, z)$ is a high-dimensional integral which cannot be directly computed. Thus instead the optimizer recieves a noisy realization of the function computed as:
+In the setting of stochastic gradient descent (SGD) the optimizer is given access only to a realization of the random function $\mathbb{E} f (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $F(\theta)$. 
+In general $\mathbb{E}f(\theta, z)$ may be a high-dimensional integral which cannot be directly computed. Thus, the optimizer instead receives a noisy realization of the function, commonly called the empirical risk, computed as:
 \begin{equation}
-	\frac{1}{n}\sum_{i=1}^{n} f(\theta, z_I)
+	\frac{1}{n}\sum_{i=1}^{n} f(\theta; z_I)
 \end{equation}
 
 In what follows we will derive results where $f(\theta)$ is assumed to be convex but not necessarily smooth. In the case where $f(\theta)$ is convex and non-smooth the subgradient is denoted as: 
+
 \begin{equation}
-\delta_{\theta} f (\theta,z)
+	\delta_{\theta} f (\theta,z)
 \end{equation}
-
-
-In the SGD method, the update step is given as: 
+Here $z_k = \left\{x_k, y_k\right\}$ a tuple of a feature and a label. In the SGD method, the update step is given as (Robbins and Monro 1951): 
 \begin{equation}
 	\theta_{k+1} = \theta_k + \gamma_k g\left(\theta_k, z_k\right)
 \end{equation}
 
-Here $g$ is an unbiased estimation of the true gradient (or subgradient) and $\theta_k$ is the step-size. 
+Here $g$ is an unbiased estimation of the true gradient (or subgradient) of $F(\theta)$, and $\gamma_k$ is the step-size. 
 
 \subsection{Use of SGD in Practice}
+SGD is commonly used in practice because typical data sets involve feature vectors which are sparse or contain redundant information. Using all such data simultaneously is inefficient; using a method such as SGD enables cheaper per iteration compute costs. Consider the example of empirical risk minimization. 
+
+\textbf{Example} (\textit{Empirical Risk Minimization}) Let $\left\{x_i, y_i\right\}_{i=1}^n$ be $n$ random samples. The empirical risk minimization problem is then:
+\begin{equation}
+	\min_{\theta} F(\theta) := \frac{1}{n} \sum_{i=1}^n f(\theta; \left\{x_i, y_i\right\})
+\end{equation}
+However, if the index $j$ is drawn from $j \sim \mathbf{U}(1,n)$ then:
+\begin{equation}
+	F(\theta) = \mathbb{E}_j f(\theta; \left\{x_j, y_j\right\})
+\end{equation}
+Given some minor technical conditions:
+\begin{align}
+\theta_{k+1} &= \theta_k - \gamma_k \nabla F(\theta_k)\\
+&= \theta_k - \gamma_k \nabla \mathbb{E}f(\theta_k, z_k)\\
+&= \theta_k - \gamma_k \mathbb{E} \nabla_{\theta} f(\theta_k, z_k)
+\end{align}
+
+The SGD algorithm is commonly used in this setting when $x_i$ is large vector. Other common use cases are in temporal difference learning and Q-learning. 
+
+\subsection{Convergence}
+
+\subsection{Optimality of SGD}
