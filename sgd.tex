@@ -63,12 +63,22 @@ Then:
 	
 \end{theorem}
 
-Note that the proof of convergence is similar to that of the subgradient method and details can be found in (Bouttou, Curtis, Nocedal 2018). 
+Note that the proof of convergence is similar to that of the subgradient method and details can be found in (Bouttou, Curtis, Nocedal 2018) and \href{http://www.princeton.edu/~yc5/ele522_optimization/lectures/stochastic_gradient.pdf}{Yuxin Chen's lectures}.
 
 
 \subsection{Optimality of SGD}
-If $F(\theta)$ is convex, and l-smooth consider two cases:
+If $F(\theta)$ is convex consider two cases:
 
-\noindent \textbf{Deterministic Convergence} 
+\noindent \textbf{Deterministic Convergence}
+\begin{itemize}
+	\item If $F(\theta)$ is Lipschitz then convergence is: $\mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$
+	\item If $F(\theta)$ is l-smooth and acceleration is not used then convergence is: $\mathcal{O}\left(\frac{1}{k}\right)$
+	\item If $F(\theta)$ is l-smooth and acceleration is used then convergence is: $\mathcal{O}\left(\frac{1}{k^2}\right)$
+\end{itemize}
 
 \noindent \textbf{Stochastic Convergence}
+\begin{itemize}
+	\item Assuming a noisy gradient oracle then optimal convergence is (regardless of smoothness): $ \mathcal{O}\left(\frac{1}{\sqrt{j}}\right)$
+\end{itemize}
+
+Thus, in this seeting smoothness does not affect the convergence rate of SGD and the rate achieved by SGD is optimal. 
