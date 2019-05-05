@@ -1,84 +1,94 @@
 \section{Stochastic Gradient Descent}
 Consider the follow optimization problem:
 \begin{equation*}
-	\min F(\theta) = \mathbb{E}f(\theta, z)
+	\min f(\theta) = \mathbb{E}f(\theta, z)
 \end{equation*}
 In the setting of stochastic gradient descent (SGD) the optimizer is given access only to a realization of the random function $\mathbb{E} f (\theta, z)$; however, the goal of SGD is still to minimize the deterministic function $F(\theta)$. 
-In general $\mathbb{E}f(\theta, z)$ may be a high-dimensional integral which cannot be directly computed. Thus, the optimizer instead receives a noisy realization of the function, commonly called the empirical risk, computed as:
+In general $\mathbb{E}f(\theta, z)$ may be a high-dimensional integral which cannot be directly computed. Alternately, the distribution of $z$ may be unknown. Thus, we try to optimize instead a noisy realization of the function, commonly called the empirical risk, computed as:
 \begin{equation*}
-	\frac{1}{n}\sum_{i=1}^{n} f(\theta; z_I)
+	\frac{1}{n}\sum_{i=1}^{n} f(\theta; z_i)
 \end{equation*}
 
-In what follows we will derive results where $f(\theta)$ is assumed to be convex but not necessarily smooth. In the case where $f(\theta)$ is convex and non-smooth the subgradient is denoted as: 
-
+Where $z_i$ are observations. In a classification problem $z_i = \left\{x_i, y_i\right\}$ a tuple of a feature and a label. In empirical risk minimization  we can have access to:
 \begin{equation*}
-	\delta_{\theta} f (\theta,z)
+	\partial_{\theta} f (\theta,z)
 \end{equation*}
-Here $z_k = \left\{x_k, y_k\right\}$ a tuple of a feature and a label. In the SGD method, the update step is given as (Robbins and Monro 1951): 
+Whice denotes the subgradietns at observation $z$. 
+
+In the general SGD method, the update step is given as (Robbins and Monro 1951): 
 \begin{equation*}
-	\theta_{k+1} = \theta_k + \gamma_k g\left(\theta_k, z_k\right)
+	\theta_{k+1} = \theta_k - \gamma_k g\left(\theta_k, z_k\right)
 \end{equation*}
 
-Here $g$ is an unbiased estimation of the true gradient (or subgradient) of $F(\theta)$, and $\gamma_k$ is the step-size. 
+Here $g$ is an unbiased estimation of the true gradient (or subgradient) of $f(\theta)$, and $\gamma_k$ is the step-size. 
 
 \subsection{Use of SGD in Practice}
-SGD is commonly used in practice because typical data sets involve feature vectors which are sparse or contain redundant information. Using all such data simultaneously is inefficient; using a method such as SGD enables cheaper per iteration compute costs. Consider the example of empirical risk minimization. 
+In emprical risk minimization, computing the gradient of the emprical risk can be very expensive. either when the sample size is extremely large or the subgradient at a particular observation is difficult to compute. 
+%SGD is commonly used in practice because typical data sets involve feature vectors which are sparse or contain redundant information. Using all such data simultaneously is inefficient; 
+Using a method such as SGD enables cheaper per iteration cost because it only requires computing a single subgradient at each iteration. Consider the example of empirical risk minimization. 
 
-\textbf{Example} (\textit{Empirical Risk Minimization}) Let $\left\{x_i, y_i\right\}_{i=1}^n$ be $n$ random samples. The empirical risk minimization problem is then:
+\textbf{Example:} (\textit{Empirical Risk Minimization}) Let $\left\{z_i\right\}_{i=1}^n$ be $n$ random samples. The empirical risk minimization problem is then:
 \begin{equation*}
-	\min_{\theta} F(\theta) := \frac{1}{n} \sum_{i=1}^n f(\theta; \left\{x_i, y_i\right\})
+	\min_{\theta} F(\theta) := \frac{1}{n} \sum_{i=1}^n f(\theta; z_i)
 \end{equation*}
-However, if the index $j$ is drawn from $j \sim \mathbf{U}(1,n)$ then:
+If the index $j$ is drawn from $j \sim \mathbf{U}(\{1,\dots,n\})$ then:
 \begin{equation*}
-	F(\theta) = \mathbb{E}_j f(\theta; \left\{x_j, y_j\right\})
+	F(\theta) = \mathbb{E}_j f(\theta; z_j)
 \end{equation*}
 Given some minor technical conditions:
 \begin{align*}
-\theta_{k+1} &= \theta_k - \gamma_k \nabla F(\theta_k)\\
-&= \theta_k - \gamma_k \nabla \mathbb{E}f(\theta_k, z_k)\\
-&= \theta_k - \gamma_k \mathbb{E} \nabla_{\theta} f(\theta_k, z_k)
+\theta_{k+1} &:= \theta_k - \gamma_k \nabla F(\theta_k)\\
+&= \theta_k - \gamma_k \nabla \mathbb{E}_jf(\theta_k, z_j)\\
+&= \theta_k - \gamma_k \mathbb{E}_j \nabla_{\theta} f(\theta_k, z_j)
 \end{align*}
+Then the SGD iteration step is $\theta_{k+1} = \theta_k - \gamma_k \nabla_{\theta} f(\theta_k, z_{i_k}$, where $i_k  \sim \mathbf{U}(\{1, \dots, n\})$
 
-The SGD algorithm is commonly used in this setting when $x_i$ is large vector. Other common use cases are in temporal difference learning and Q-learning. 
+\noindent \textbf{Remark:}
+The SGD algorithm is commonly used in the reinforcement learning setting (\textit{e.g.} temporal difference learning and Q-learning). 
 
 \subsection{Convergence}
-When $F(\theta)$ is convex note that:
+When $f(\theta)$ is convex and the unbiased gradient $g(\theta, z)$ satisfies:
 \begin{align*}
-	\mathbb{E} || g(\theta, z) ||_2^2 &\leq \beta^2 \; \forall \theta\\
-	\mathbb{E} || g(\theta, z) ||_2^2 &\geq ||\mathbb{E} g(\theta, z) ||_2^2\\
-	||\mathbb{E} g(\theta, z) ||_2^2 &= ||\delta f(\theta)||_2
+	\mathbb{E} || g(\theta, z) ||_2^2 &\leq B^2 \; \forall \theta \implies\\
+	B^2 \geq \mathbb{E} || g(\theta, z) ||_2^2 &\geq ||\mathbb{E} g(\theta, z) ||_2^2 = ||\partial f(\theta)||_2^2\\
+%	||\mathbb{E} g(\theta, z) ||_2^2 &= ||\delta f(\theta)||_2
 \end{align*}
-
-Then:
+Hence $f$ is $B$-Lipschitz. Then we have the following result.
 \begin{theorem}
-	Given $\bar{\theta}_k= \sum_{i=0}^k \frac{\gamma_i}{\sum_{j=0}^k \gamma_j}$. It is the case that: 
+	Denote $\bar{\theta}_k= \sum_{i=0}^k \frac{\gamma_i \theta_i}{\sum_{j=0}^k \gamma_j}$. Then: 
 	\begin{equation*}
-	\mathbb{E}\left[f(\bar{\theta}_k 0 f(\theta^*))\right] \leq \frac{\frac{1}{2} ||\theta_0 - \theta^*||_2^2 + \frac{1}{2}\beta^2 \sum_{i=0}^{k}\gamma_i^2}{\sum_{j=0}^k \gamma_j}
+	\mathbb{E}\left[f(\bar{\theta}_k) f(\theta^*))\right] \leq \frac{\frac{1}{2} ||\theta_0 - \theta^*||_2^2 + \frac{1}{2}B^2 \sum_{i=0}^{k}\gamma_i^2}{\sum_{j=0}^k \gamma_j}
 	\end{equation*}
-	Thus, if the step size $\gamma_k= \mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$:
-	\begin{equation*}
-		\mathbb{E}\left[f(\bar{\theta}_k 0 f(\theta^*))\right] \leq \mathcal{O}\left(\frac{\log k}{\sqrt{k}}\right)
-	\end{equation*}
-	Furthermore, it is possible to drop the term $\log k$ if $\gamma_k$ is properly chosen. 
-	
 \end{theorem}
+	\textbf{Remark:}
+	\begin{enumerate}
+		\item If the step size $\gamma_k= \mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$, then:
+		\begin{equation*}
+		\mathbb{E}\left[f(\bar{\theta}_k) f(\theta^*))\right] = \mathcal{O}\left(\frac{\log k}{\sqrt{k}}\right)
+		\end{equation*}
+		\item Furthermore, it is possible to drop the term $\log k$ if $\gamma_k$ is properly chosen. 
+		\item $\mathcal{O}(\frac{1}{\sqrt{k}})$ is optimal.
+	\end{enumerate}
+	
+	
+
 
 Note that the proof of convergence is similar to that of the subgradient method and details can be found in (Bouttou, Curtis, Nocedal 2018) and \href{http://www.princeton.edu/~yc5/ele522_optimization/lectures/stochastic_gradient.pdf}{Yuxin Chen's lectures}.
 
 
-\subsection{Optimality of SGD}
-If $F(\theta)$ is convex consider two cases:
+\subsection{Rate Comparison of Different Settings and Methods}
+If $f(\theta)$ is convex consider two cases:
 
-\noindent \textbf{Deterministic Convergence}
+\noindent \textbf{Deterministic Case}
 \begin{itemize}
-	\item If $F(\theta)$ is Lipschitz then convergence is: $\mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$
-	\item If $F(\theta)$ is l-smooth and acceleration is not used then convergence is: $\mathcal{O}\left(\frac{1}{k}\right)$
-	\item If $F(\theta)$ is l-smooth and acceleration is used then convergence is: $\mathcal{O}\left(\frac{1}{k^2}\right)$
+	\item If $f(\theta)$ is Lipschitz then convergence is: $\mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$ (\textit{subgradient})
+	\item If $f(\theta)$ is l-smooth and acceleration is not used then convergence is: $\mathcal{O}\left(\frac{1}{k}\right)$ (\textit{gradient descent})
+	\item If $F(\theta)$ is l-smooth and acceleration is used then convergence is: $\mathcal{O}\left(\frac{1}{k^2}\right)$ (\textit{accelerated gradient descent})
 \end{itemize}
 
-\noindent \textbf{Stochastic Convergence}
+\noindent \textbf{Stochastic Case}
 \begin{itemize}
-	\item Assuming a noisy gradient oracle then optimal convergence is (regardless of smoothness): $ \mathcal{O}\left(\frac{1}{\sqrt{j}}\right)$
+	\item Assuming a noisy gradient oracle then optimal convergence is (regardless of smoothness): $ \mathcal{O}\left(\frac{1}{\sqrt{k}}\right)$
 \end{itemize}
 
-Thus, in this seeting smoothness does not affect the convergence rate of SGD and the rate achieved by SGD is optimal. 
+Thus, in this setting smoothness does not affect the convergence rate of SGD and the rate achieved by SGD is optimal. 
